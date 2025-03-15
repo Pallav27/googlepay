@@ -18,7 +18,6 @@ const Credits = () => {
       {/* Table */}
       <Table className="w-full border border-gray-200">
         <TableCaption className="text-gray-500">
-          Last Fetched: {new Date().toLocaleString()}
         </TableCaption>
         <TableHeader className="bg-gray-100">
           <TableRow>
