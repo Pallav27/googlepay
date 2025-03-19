@@ -1,36 +1,54 @@
-import React from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { Button } from "./ui/button";
+import {Input} from "./ui/input";
 
-const Balance = () => {
+interface User {
+  name: string;
+  branch: string;
+  accountNumber: string;
+  money: number;
+  email: string;
+}
+
+interface BalanceProps {
+  user: User | null;
+}
+
+export default function Balance({ user }: BalanceProps) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gray-100 rounded-lg shadow-md">
-      {/* Bank Balance Display */}
-      <h1 className="text-4xl font-bold text-gray-800">Bank Balance</h1>
-      <div className="text-6xl font-semibold text-green-600 my-4">$500.00</div>
-
-      {/* Account Details */}
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md text-left">
-        <h2 className="text-lg font-bold text-gray-700">Account Details</h2>
-        <p className="text-gray-600"><span className="font-semibold">Name:</span> Pallav Sharma</p>
-        <p className="text-gray-600"><span className="font-semibold">Account Number:</span> 1234567890</p>
-        <p className="text-gray-600"><span className="font-semibold">Branch Name:</span> Bokaro</p>
-        <p className="text-gray-600"><span className="font-semibold">Email:</span> pallavshrm27@gmail.com</p>
-      </div>
-
-      {/* Transfer Section */}
-      <div className="mt-6 bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-lg font-bold text-gray-700 mb-4">Transfer Funds</h2>
-        <div className="flex flex-col gap-4">
-          <Input placeholder="Enter VPA ID" className="p-2 border border-gray-300 rounded-md" />
-          <Input placeholder="Enter Amount" className="p-2 border border-gray-300 rounded-md" />
-          <Button className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-md">
-            Transfer
-          </Button>
+    <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 h-full rounded-lg shadow-lg border border-gray-200 items-center">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Account Overview</h2>
+      {user ? (
+        <div className="space-y-4 text-center">
+          <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <p className="text-sm text-gray-600">Name</p>
+            <p className="text-lg font-semibold text-gray-800">{user.name}</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <p className="text-sm text-gray-600">Branch</p>
+            <p className="text-lg font-semibold text-gray-800">{user.branch}</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <p className="text-sm text-gray-600">Account Number</p>
+            <p className="text-lg font-semibold text-gray-800">{user.accountNumber}</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <p className="text-sm text-gray-600">Balance</p>
+            <p className="text-2xl font-bold text-green-600">₹{user.money}</p>
+          </div>
+          <div className="flex flex-col space-y-4 items-center">
+            <Input placeholder="Enter VPA"/>
+            
+            <Button onChange={() => console.log("Transfer Money")}>
+              Transfer Money
+            </Button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-white p-6 rounded-lg shadow-sm text-center">
+          <p className="text-gray-600">Please log in to view your balance.</p>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Balance;
+}
