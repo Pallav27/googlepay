@@ -1,39 +1,37 @@
-import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import React from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-const Credits = () => {
+interface Transaction {
+  amount: number;
+  from: string;
+  timestamp: Date;
+}
+
+interface CreditsProps {
+  credits: Transaction[];
+}
+
+export default function Credits({ credits }: CreditsProps) {
   return (
-    <div className="w-full bg-white p-6 rounded-lg shadow-md">
-      {/* Section Title */}
-      <h3 className="text-2xl font-bold text-gray-800 text-center mb-4">Credits</h3>
-
-      {/* Table */}
-      <Table className="w-full border border-gray-200">
-        <TableCaption className="text-gray-500">
-        </TableCaption>
-        <TableHeader className="bg-gray-100">
-          <TableRow>
-            <TableHead className="text-left font-semibold text-gray-700">Transaction ID</TableHead>
-            <TableHead className="text-right font-semibold text-gray-700">Amount</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow className="border-t">
-            <TableCell className="text-gray-600">Credit Card</TableCell>
-            <TableCell className="text-green-500 text-right font-semibold">$250.00</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Credits</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {credits.length > 0 ? (
+          <div className="space-y-3">
+            {credits.map((credit, index) => (
+              <Card key={index} className="p-4">
+                <p><strong>Amount:</strong> ₹{credit.amount}</p>
+                <p><strong>From:</strong> {credit.from}</p>
+                <p><strong>Date:</strong> {new Date(credit.timestamp).toLocaleString()}</p>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">No credits found.</p>
+        )}
+      </CardContent>
+    </Card>
   );
-};
-
-export default Credits;
+}

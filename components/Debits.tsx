@@ -1,39 +1,37 @@
-import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import React from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-const Credits = () => {
+interface Transaction {
+  amount: number;
+  to: string;
+  timestamp: Date;
+}
+
+interface DebitsProps {
+  debits: Transaction[];
+}
+
+export default function Debits({ debits }: DebitsProps) {
   return (
-    <div className="w-full bg-white p-6 rounded-lg shadow-md">
-      {/* Section Title */}
-      <h3 className="text-2xl font-bold text-gray-800 text-center mb-4">Debits</h3>
-
-      {/* Table */}
-      <Table className="w-full border border-gray-200">
-        <TableCaption className="text-gray-500">
-        </TableCaption>
-        <TableHeader className="bg-gray-100">
-          <TableRow>
-            <TableHead className="text-left font-semibold text-gray-700">Transaction ID</TableHead>
-            <TableHead className="text-right font-semibold text-gray-700">Amount</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow className="border-t">
-            <TableCell className="text-gray-600">Debit Card</TableCell>
-            <TableCell className="text-red-500 text-right font-semibold">$250.00</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Debits</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {debits.length > 0 ? (
+          <div className="space-y-3">
+            {debits.map((debit, index) => (
+              <Card key={index} className="p-4">
+                <p><strong>Amount:</strong> ₹{debit.amount}</p>
+                <p><strong>To:</strong> {debit.to}</p>
+                <p><strong>Date:</strong> {new Date(debit.timestamp).toLocaleString()}</p>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">No debits found.</p>
+        )}
+      </CardContent>
+    </Card>
   );
-};
-
-export default Credits;
+}

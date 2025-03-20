@@ -7,7 +7,6 @@ import jwt from "jsonwebtoken";
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
-    console.log("Received login request for email:", email);
 
     if (!email || !password) {
       return NextResponse.json(
@@ -20,7 +19,6 @@ export async function POST(req: Request) {
 
     // Find user by email
     const user = await User.findOne({ email });
-    console.log("User found in database:", user); // Debugging
 
     if (!user) {
       return NextResponse.json(
@@ -31,8 +29,6 @@ export async function POST(req: Request) {
 
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log("Password valid:", isPasswordValid); // Debugging
-
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Invalid credentials." },
@@ -54,6 +50,8 @@ export async function POST(req: Request) {
       accountNumber: user.accountNumber,
       money: user.money,
       email: user.email,
+      debits: user.debits || [], // Include debits
+      credits: user.credits || [], // Include credits
     };
 
     return NextResponse.json(

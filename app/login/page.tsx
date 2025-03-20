@@ -20,7 +20,6 @@ export default function Login() {
 
     setLoading(true);
     try {
-      console.log("Sending login request with:", { email, password }); // Debugging
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -28,12 +27,10 @@ export default function Login() {
       });
 
       const data = await res.json();
-      console.log("Login response:", data); // Debugging
-
       if (res.ok) {
         toast.success("Login successful! Redirecting...");
         document.cookie = `token=${data.token}; path=/; max-age=3600`; // Store token for 1 hour
-        localStorage.setItem("user", JSON.stringify(data.user)); // Save user data
+        localStorage.setItem("user", JSON.stringify(data.user)); // Save user data including debits and credits
         setTimeout(() => router.push("/"), 2000); // Redirect to home page
       } else {
         toast.error(data.error || "Invalid credentials.");

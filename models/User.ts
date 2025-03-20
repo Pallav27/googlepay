@@ -1,13 +1,22 @@
 import mongoose, { Schema, models } from "mongoose";
 
+const transactionSchema = new Schema({
+  amount: { type: Number, required: true },
+  to: { type: String }, // For debits
+  from: { type: String }, // For credits
+  timestamp: { type: Date, default: Date.now },
+});
+
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   VPA: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   branch: { type: String, required: true },
-  accountNumber: { type: String, required: true, unique: true },
+  accountNumber: { type: String, required: true },
   money: { type: Number, required: true },
+  debits: [transactionSchema], // Track outgoing transactions
+  credits: [transactionSchema], // Track incoming transactions
 }, { timestamps: true });
 
 const User = models.User || mongoose.model("User", userSchema);
