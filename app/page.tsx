@@ -13,7 +13,6 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import Balance from "@/components/Balance";
-import TransferMoney from "@/components/TransferMoney";
 
 export default function Home() {
   const router = useRouter();
@@ -95,10 +94,7 @@ export default function Home() {
         </ResizablePanel>
       </ResizablePanelGroup>
 
-      {/* Transfer Money Form */}
-      <div className="absolute bottom-4 right-4">
-        <TransferMoney onTransfer={handleTransfer} />
-      </div>
+      
 
       {/* Footer (unchanged) */}
       <Footer />

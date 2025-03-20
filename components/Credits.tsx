@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Transaction {
   amount: number;
@@ -13,25 +21,37 @@ interface CreditsProps {
 
 export default function Credits({ credits }: CreditsProps) {
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Credits</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {credits.length > 0 ? (
-          <div className="space-y-3">
-            {credits.map((credit, index) => (
-              <Card key={index} className="p-4">
-                <p><strong>Amount:</strong> ₹{credit.amount}</p>
-                <p><strong>From:</strong> {credit.from}</p>
-                <p><strong>Date:</strong> {new Date(credit.timestamp).toLocaleString()}</p>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">No credits found.</p>
-        )}
-      </CardContent>
-    </Card>
+    <div className="h-full p-4 bg-gray-50 rounded-lg">
+      <div className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Credits
+      </div>
+      <Table className="border">
+        
+        <TableHeader>
+          <TableRow>
+            <TableHead>Amount</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead>Date</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {credits.length > 0 ? (
+            credits.map((credit, index) => (
+              <TableRow key={index}>
+                <TableCell>₹{credit.amount}</TableCell>
+                <TableCell>{credit.from}</TableCell>
+                <TableCell>{new Date(credit.timestamp).toLocaleString()}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={3} className="text-center text-gray-500">
+                No credits found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

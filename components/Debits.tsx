@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Transaction {
   amount: number;
@@ -13,25 +21,36 @@ interface DebitsProps {
 
 export default function Debits({ debits }: DebitsProps) {
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Debits</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {debits.length > 0 ? (
-          <div className="space-y-3">
-            {debits.map((debit, index) => (
-              <Card key={index} className="p-4">
-                <p><strong>Amount:</strong> ₹{debit.amount}</p>
-                <p><strong>To:</strong> {debit.to}</p>
-                <p><strong>Date:</strong> {new Date(debit.timestamp).toLocaleString()}</p>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">No debits found.</p>
-        )}
-      </CardContent>
-    </Card>
+    <div className="h-full p-4 bg-gray-50 rounded-lg">
+      <div className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Debits
+      </div>
+      <Table className="border">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Amount</TableHead>
+            <TableHead>To</TableHead>
+            <TableHead>Date</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {debits.length > 0 ? (
+            debits.map((debit, index) => (
+              <TableRow key={index}>
+                <TableCell>₹{debit.amount}</TableCell>
+                <TableCell>{debit.to}</TableCell>
+                <TableCell>{new Date(debit.timestamp).toLocaleString()}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={3} className="text-center text-gray-500">
+                No debits found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
