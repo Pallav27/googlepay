@@ -12,7 +12,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import Balance from "@/components/Balance";
-import Requests from "@/components/Requests";
+import TransactionChart from "@/components/Chart"; // Import the Chart component
 
 export default function Home() {
   const router = useRouter();
@@ -22,13 +22,12 @@ export default function Home() {
     accountNumber: string;
     money: number;
     email: string;
-    VPA: string; // Add VPA to the user type
+    VPA: string;
     debits: { amount: number; to: string; timestamp: Date }[];
     credits: { amount: number; from: string; timestamp: Date }[];
   } | null>(null);
 
   useEffect(() => {
-    // Fetch user details from local storage
     const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
@@ -44,24 +43,22 @@ export default function Home() {
 
     const data = await res.json();
     if (res.ok) {
-      setUser(data.sender); // Update the sender's data
-      localStorage.setItem("user", JSON.stringify(data.sender)); // Update local storage
+      setUser(data.sender);
+      localStorage.setItem("user", JSON.stringify(data.sender));
     } else {
       throw new Error(data.error || "Transfer failed.");
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Clear user data
-    router.push("/login"); // Redirect to login
+    localStorage.removeItem("user");
+    router.push("/login");
   };
 
   return (
     <div className="h-screen w-screen flex flex-col relative">
-      {/* Header (unchanged) */}
       <Header />
 
-      {/* Login/Signup or Logout Buttons */}
       <div className="absolute top-4 right-4 flex gap-2">
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>
@@ -73,33 +70,38 @@ export default function Home() {
         )}
       </div>
 
-      {/* Full-Screen Resizable Panel Group */}
       <ResizablePanelGroup direction="horizontal" className="flex-1 w-full">
         <ResizablePanel className="h-full" defaultSize={50}>
           <ResizablePanelGroup direction="vertical" className="h-full">
-            <ResizablePanel className="h-full" defaultSize={50}>
-              {/* Add the Requests component
-              <Requests userVPA={user?.VPA || ""} /> */}
+          <ResizablePanel className="h-full" defaultSize={50}>
+              <Transactions debits={user?.debits || []} credits={user?.credits || []} />
             </ResizablePanel>
-            <ResizableHandle withHandle />
             <ResizablePanel className="h-full" defaultSize={50}>
-              
-              {/* Pass debits and credits to the Transactions component */}
-              <Transactions
-                debits={user?.debits || []}
-                credits={user?.credits || []}
+              {/* Transaction Chart Component */}
+              <TransactionChart
+                transactions={(user?.debits || []).map((debit) => ({
+                  date: new Date(debit.timestamp).toLocaleDateString(),
+                  debits: debit.amount,
+                  credits: 0,
+                })).concat(
+                  (user?.credits || []).map((credit) => ({
+                    date: new Date(credit.timestamp).toLocaleDateString(),
+                    debits: 0,
+                    credits: credit.amount,
+                  }))
+                )}
               />
             </ResizablePanel>
+            <ResizableHandle withHandle />
+            
           </ResizablePanelGroup>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel className="h-full" defaultSize={50}>
-          {/* Pass user data to the Balance component */}
           <Balance user={user} />
         </ResizablePanel>
       </ResizablePanelGroup>
 
-      {/* Footer (unchanged) */}
       <Footer />
     </div>
   );

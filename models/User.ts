@@ -1,18 +1,9 @@
 import mongoose, { Schema, models } from "mongoose";
 
-const transactionSchema = new Schema({
-  amount: { type: Number, required: true },
-  to: { type: String }, // For debits
-  from: { type: String }, // For credits
-  timestamp: { type: Date, default: Date.now },
-});
-
 const requestSchema = new Schema({
-  id: { type: String, required: true }, // Unique request ID
   amount: { type: Number, required: true },
   from: { type: String, required: true }, // Requester's VPA
   to: { type: String, required: true }, // Requestee's VPA
-  status: { type: String, enum: ["Pending", "Completed", "Rejected"], default: "Pending" },
   timestamp: { type: Date, default: Date.now },
 });
 
@@ -24,8 +15,8 @@ const userSchema = new Schema({
   branch: { type: String, required: true },
   accountNumber: { type: String, required: true },
   money: { type: Number, required: true },
-  debits: [transactionSchema], // Track outgoing transactions
-  credits: [transactionSchema], // Track incoming transactions
+  debits: [{ amount: Number, to: String, timestamp: Date }], // Track outgoing transactions
+  credits: [{ amount: Number, from: String, timestamp: Date }], // Track incoming transactions
   requests: [requestSchema], // Track money requests
 }, { timestamps: true });
 
