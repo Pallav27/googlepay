@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Credits from "@/components/Credits";
-import Debits from "@/components/Debits";
+import Transactions from "@/components/Transactions";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import {
@@ -13,6 +12,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import Balance from "@/components/Balance";
+import Requests from "@/components/Requests";
 
 export default function Home() {
   const router = useRouter();
@@ -22,6 +22,7 @@ export default function Home() {
     accountNumber: string;
     money: number;
     email: string;
+    VPA: string; // Add VPA to the user type
     debits: { amount: number; to: string; timestamp: Date }[];
     credits: { amount: number; from: string; timestamp: Date }[];
   } | null>(null);
@@ -77,13 +78,17 @@ export default function Home() {
         <ResizablePanel className="h-full" defaultSize={50}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel className="h-full" defaultSize={50}>
-              {/* Pass debits to the Debits component */}
-              <Debits debits={user?.debits || []} />
+              
+              {/* Add the Requests component
+              <Requests userVPA={user?.VPA || ""} /> */}
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel className="h-full" defaultSize={50}>
-              {/* Pass credits to the Credits component */}
-              <Credits credits={user?.credits || []} />
+              {/* Pass debits and credits to the Transactions component */}
+              <Transactions
+                debits={user?.debits || []}
+                credits={user?.credits || []}
+              />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
@@ -93,8 +98,6 @@ export default function Home() {
           <Balance user={user} />
         </ResizablePanel>
       </ResizablePanelGroup>
-
-      
 
       {/* Footer (unchanged) */}
       <Footer />

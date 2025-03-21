@@ -7,6 +7,15 @@ const transactionSchema = new Schema({
   timestamp: { type: Date, default: Date.now },
 });
 
+const requestSchema = new Schema({
+  id: { type: String, required: true }, // Unique request ID
+  amount: { type: Number, required: true },
+  from: { type: String, required: true }, // Requester's VPA
+  to: { type: String, required: true }, // Requestee's VPA
+  status: { type: String, enum: ["Pending", "Completed", "Rejected"], default: "Pending" },
+  timestamp: { type: Date, default: Date.now },
+});
+
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -17,6 +26,7 @@ const userSchema = new Schema({
   money: { type: Number, required: true },
   debits: [transactionSchema], // Track outgoing transactions
   credits: [transactionSchema], // Track incoming transactions
+  requests: [requestSchema], // Track money requests
 }, { timestamps: true });
 
 const User = models.User || mongoose.model("User", userSchema);
