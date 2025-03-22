@@ -73,6 +73,10 @@ export default function Balance({ user }: BalanceProps) {
       {user ? (
         <div className="space-y-4 text-center">
           <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <p className="text-sm text-gray-600">Balance</p>
+            <p className="text-2xl font-bold text-green-600">₹{user.money}</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             <p className="text-sm text-gray-600">Name</p>
             <p className="text-lg font-semibold text-gray-800">{user.name}</p>
           </div>
@@ -84,10 +88,7 @@ export default function Balance({ user }: BalanceProps) {
             <p className="text-sm text-gray-600">Account Number</p>
             <p className="text-lg font-semibold text-gray-800">{user.accountNumber}</p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            <p className="text-sm text-gray-600">Balance</p>
-            <p className="text-2xl font-bold text-green-600">₹{user.money}</p>
-          </div>
+          
           <div className="flex flex-col space-y-4 items-center">
             <Input
               placeholder="Enter VPA"
