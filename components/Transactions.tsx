@@ -52,7 +52,7 @@ export default function Transactions({ debits, credits, onTransfer }: Transactio
   transactions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
-    <div className="h-full p-4 bg-gray-50 rounded-lg">
+    <div className="h-full p-4 rounded-lg bg-stone-100">
       {/* Transfer Form */}
       <form onSubmit={handleTransfer} className="mb-6">
         <div className="flex flex-col space-y-4">

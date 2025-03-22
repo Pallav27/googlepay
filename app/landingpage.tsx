@@ -8,7 +8,7 @@ export default function LandingPage() {
   const router = useRouter();
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#d2b48c] text-gray-800">
+    <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#d3b184] text-gray-800">
       
       <div className="mb-8">
         <img src="/wallet.png" alt="Web Wallet Logo" width={200} height={200} />
@@ -16,7 +16,7 @@ export default function LandingPage() {
 
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center text-center">
-        <h1 className="text-8xl font-bold mb-4">Web Wallet</h1>
+        <h1 className="text-8xl font-bold mb-4 font-mono">Web Wallet</h1>
         <p className="text-xl mb-8">
           Your one-stop solution for managing your finances effortlessly.
         </p>

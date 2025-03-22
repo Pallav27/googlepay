@@ -68,7 +68,7 @@ export default function Balance({ user }: BalanceProps) {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 h-full rounded-lg shadow-lg border border-gray-200 items-center">
+    <div className="p-6 bg-stone-200 from-blue-50 to-purple-50 h-full rounded-lg shadow-lg border border-gray-200 items-center">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Account Overview</h2>
       {user ? (
         <div className="space-y-4 text-center">

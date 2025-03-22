@@ -20,7 +20,7 @@ export default function TransactionChart({ transactions }: { transactions: Trans
   const creditTransactions = transactions.filter((t) => t.credits > 0);
 
   return (
-    <Card className="p-4 shadow-lg rounded-2xl border border-gray-200 dark:border-gray-800 w-full h-96">
+    <Card className="p-4 shadow-lg rounded-2xl border border-gray-200 dark:border-gray-800 w-full h-96  bg-stone-100">
       <CardHeader className="flex justify-between items-center">
         <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Transactions Overview
