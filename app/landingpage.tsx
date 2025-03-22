@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LandingPage() {
@@ -11,7 +12,7 @@ export default function LandingPage() {
     <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#d3b184] text-gray-800">
       
       <div className="mb-8">
-        <img src="/wallet.png" alt="Web Wallet Logo" width={200} height={200} />
+        <Image src="/wallet.png" alt="Web Wallet Logo" width={200} height={200} />
       </div>
 
       {/* Main Content */}

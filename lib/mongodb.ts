@@ -7,7 +7,14 @@ if (!MONGODB_URI) {
 }
 
 // Global cache for mongoose connection
-let cached = (global as any).mongoose || { conn: null, promise: null };
+const globalWithMongoose = global as unknown as {
+    mongoose?: {
+        conn: mongoose.Connection | null;
+        promise: Promise<mongoose.Mongoose> | null;
+    };
+};
+
+const cached = globalWithMongoose.mongoose ?? (globalWithMongoose.mongoose = { conn: null, promise: null });
 
 export async function connectMongoDB() {
     if (cached.conn) {
@@ -18,12 +25,12 @@ export async function connectMongoDB() {
         // Create a new connection promise if it doesn't exist
         cached.promise = mongoose.connect(MONGODB_URI, {
             dbName: "authDB", // Specify the database name
-        }).then((mongoose) => {
-            return mongoose;
+        }).then((mongooseInstance) => {
+            return mongooseInstance;
         });
     }
 
-    // Await the connection promise and cache the connection
-    cached.conn = await cached.promise;
+    // Await the connection promise and extract the connection object
+    cached.conn = await cached.promise.then((mongooseInstance) => mongooseInstance.connection);
     return cached.conn;
 }

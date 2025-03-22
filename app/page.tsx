@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Transactions from "@/components/Transactions";
-import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import {
   ResizableHandle,
