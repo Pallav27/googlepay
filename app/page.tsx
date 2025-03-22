@@ -12,7 +12,8 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import Balance from "@/components/Balance";
-import TransactionChart from "@/components/Chart"; // Import the Chart component
+import TransactionChart from "@/components/Chart";
+import LandingPage from "./landingpage"; 
 
 export default function Home() {
   const router = useRouter();
@@ -35,26 +36,57 @@ export default function Home() {
   }, []);
 
   const handleTransfer = async (vpa: string, amount: number) => {
-    const res = await fetch("/api/transfer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ senderEmail: user?.email, vpa, amount }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      setUser(data.sender);
-      localStorage.setItem("user", JSON.stringify(data.sender));
-    } else {
-      throw new Error(data.error || "Transfer failed.");
+    try {
+      const res = await fetch("/api/transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ senderEmail: user?.email, vpa, amount }),
+      });
+  
+      const data = await res.json();
+      if (res.ok) {
+        // Update the user state with the new data
+        setUser(data.sender);
+  
+        // Update local storage
+        localStorage.setItem("user", JSON.stringify(data.sender));
+  
+        // Optionally, you can also update the receiver's data if needed
+        console.log("Receiver updated:", data.receiver);
+      } else {
+        throw new Error(data.error || "Transfer failed.");
+      }
+    } catch (error) {
+      console.error("Transfer error:", error);
+      alert("Transfer failed. Please try again.");
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        throw new Error("Logout failed.");
+      }
+
+      localStorage.removeItem("user");
+
+      router.push("/landingpage");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Logout failed. Please try again.");
+    }
   };
 
+  // If no user is logged in, show the landing page
+  if (!user) {
+    return <LandingPage />;
+  }
+
+  // If a user is logged in, show the dashboard
   return (
     <div className="h-screen w-screen flex flex-col relative">
       <Header />
@@ -71,37 +103,38 @@ export default function Home() {
       </div>
 
       <ResizablePanelGroup direction="horizontal" className="flex-1 w-full">
-        <ResizablePanel className="h-full" defaultSize={50}>
-          <ResizablePanelGroup direction="vertical" className="h-full">
-            <ResizablePanel className="h-full" defaultSize={50}>
-              {/* Transaction Chart Component */}
-              <TransactionChart
-                transactions={(user?.debits || []).map((debit) => ({
-                  date: new Date(debit.timestamp).toLocaleDateString(),
-                  debits: debit.amount,
-                  credits: 0,
-                })).concat(
-                  (user?.credits || []).map((credit) => ({
-                    date: new Date(credit.timestamp).toLocaleDateString(),
-                    debits: 0,
-                    credits: credit.amount,
-                  }))
-                )}
-              />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel className="h-full" defaultSize={50}>
-              <Transactions debits={user?.debits || []} credits={user?.credits || []} />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+        <ResizablePanel className="h-full" defaultSize={25}>
+          <Balance user={user} />
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel className="h-full" defaultSize={50}>
-          <Balance user={user} />
+          <ResizablePanelGroup direction="vertical" className="h-full">
+            <ResizablePanel className="h-full" defaultSize={50}>
+            <Transactions
+                debits={user?.debits || []}
+                credits={user?.credits || []}
+                onTransfer={handleTransfer} // Pass the handleTransfer function
+            />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel className="h-full" defaultSize={50}>
+            <TransactionChart
+  transactions={(user?.debits || []).map((debit) => ({
+    date: new Date(debit.timestamp).toLocaleDateString(),
+    debits: debit.amount,
+    credits: 0,
+  })).concat(
+    (user?.credits || []).map((credit) => ({
+      date: new Date(credit.timestamp).toLocaleDateString(),
+      debits: 0,
+      credits: credit.amount,
+    }))
+  )}
+/>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
-
-      <Footer />
     </div>
   );
 }

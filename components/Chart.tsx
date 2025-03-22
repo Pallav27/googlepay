@@ -15,8 +15,23 @@ type Transaction = {
 export default function TransactionChart({ transactions }: { transactions: Transaction[] }) {
   const [showDebits, setShowDebits] = useState(true);
 
-  // Ensure transactions have unique date keys
-  const uniqueTransactions = transactions.map((t, index) => ({ ...t, id: `${t.date}-${index}` }));
+  // Aggregate transactions by date
+  const aggregatedTransactions = transactions.reduce((acc, transaction) => {
+    const date = transaction.date;
+    if (!acc[date]) {
+      acc[date] = { date, debits: 0, credits: 0 };
+    }
+    acc[date].debits += transaction.debits;
+    acc[date].credits += transaction.credits;
+    return acc;
+  }, {} as Record<string, Transaction>);
+
+  // Convert aggregated transactions to an array and sort by date
+  const sortedTransactions = Object.values(aggregatedTransactions).sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return dateA - dateB;
+  });
 
   return (
     <Card className="p-4 shadow-lg rounded-2xl border border-gray-200 dark:border-gray-800 w-full h-96">
@@ -36,7 +51,7 @@ export default function TransactionChart({ transactions }: { transactions: Trans
       <Separator className="mb-4" />
       <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={uniqueTransactions} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+          <BarChart data={sortedTransactions} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
             <XAxis dataKey="date" tick={{ fill: "#94a3b8" }} />
             <YAxis tick={{ fill: "#94a3b8" }} />
             <Tooltip contentStyle={{ backgroundColor: "#1e293b", color: "#f8fafc", borderRadius: "8px" }} cursor={{ fill: "#334155" }} />
