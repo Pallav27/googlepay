@@ -11,26 +11,37 @@ interface User {
   accountNumber: string;
   money: number;
   email: string;
+  VPA: string;
+  debits: { amount: number; to: string; timestamp: Date }[];
+  credits: { amount: number; from: string; timestamp: Date }[];
 }
 
 interface BalanceProps {
   user: User | null;
+  onTransfer: (vpa: string, amount: number) => Promise<void>;
 }
 
-export default function Balance({ user }: BalanceProps) {
+export default function Balance({ user, onTransfer }: BalanceProps) {
   const [vpa, setVPA] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleTransfer = async () => {
+  const handleTransfer = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (!vpa || !amount) {
       toast.error("Please fill in all fields.");
       return;
     }
 
     const amountNumber = parseFloat(amount);
-    if (isNaN(amountNumber) || amountNumber <= 0) {
+    if (isNaN(amountNumber)) {
       toast.error("Please enter a valid amount.");
+      return;
+    }
+
+    if (amountNumber <= 0) {
+      toast.error("Amount must be greater than 0.");
       return;
     }
 
@@ -39,29 +50,21 @@ export default function Balance({ user }: BalanceProps) {
       return;
     }
 
+    if (amountNumber > user.money) {
+      toast.error("Insufficient balance.");
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await fetch("/api/transfer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ senderEmail: user.email, vpa, amount: amountNumber }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Transfer successful!");
-        setVPA("");
-        setAmount("");
-        // Update the user's balance in the UI
-        if (user) {
-          user.money -= amountNumber;
-        }
-      } else {
-        toast.error(data.error || "Transfer failed. Please try again.");
-      }
+      await onTransfer(vpa, amountNumber);
+      toast.success("Transfer successful!");
+      setVPA("");
+      setAmount("");
     } catch (error) {
-      console.error("Transfer error:", error);
-      toast.error("Network error. Please try again.");
+      // Prefixing with underscore to indicate it's intentionally unused
+      console.log(error);
+      
     } finally {
       setLoading(false);
     }
@@ -88,8 +91,9 @@ export default function Balance({ user }: BalanceProps) {
             <p className="text-sm text-gray-600">Account Number</p>
             <p className="text-lg font-semibold text-gray-800">{user.accountNumber}</p>
           </div>
-          
-          <div className="flex flex-col space-y-4 items-center">
+
+          {/* Transfer Form */}
+          <form onSubmit={handleTransfer} className="flex flex-col space-y-4 items-center">
             <Input
               placeholder="Enter VPA"
               value={vpa}
@@ -101,10 +105,10 @@ export default function Balance({ user }: BalanceProps) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
-            <Button onClick={handleTransfer} disabled={loading}>
+            <Button type="submit" disabled={loading}>
               {loading ? "Transferring..." : "Transfer Money"}
             </Button>
-          </div>
+          </form>
         </div>
       ) : (
         <div className="bg-white p-6 rounded-lg shadow-sm text-center">

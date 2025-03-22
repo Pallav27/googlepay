@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Table,
   TableBody,
@@ -10,8 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 interface Transaction {
   amount: number;
@@ -23,25 +21,9 @@ interface Transaction {
 interface TransactionsProps {
   debits: Transaction[];
   credits: Transaction[];
-  onTransfer: (vpa: string, amount: number) => void; // Add this prop
 }
 
-export default function Transactions({ debits, credits, onTransfer }: TransactionsProps) {
-  const [vpa, setVPA] = useState("");
-  const [amount, setAmount] = useState("");
-
-  const handleTransfer = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const amountNumber = parseFloat(amount);
-    if (isNaN(amountNumber) || amountNumber <= 0) {
-      alert("Please enter a valid amount.");
-      return;
-    }
-
-    onTransfer(vpa, amountNumber);
-  };
-
+export default function Transactions({ debits, credits }: TransactionsProps) {
   // Combine debits and credits into a single array
   const transactions = [
     ...debits.map((debit) => ({ ...debit, type: "debit" as const })),
@@ -53,24 +35,6 @@ export default function Transactions({ debits, credits, onTransfer }: Transactio
 
   return (
     <div className="h-full p-4 rounded-lg bg-stone-100">
-      {/* Transfer Form */}
-      <form onSubmit={handleTransfer} className="mb-6">
-        <div className="flex flex-col space-y-4">
-          <Input
-            placeholder="Enter VPA ID"
-            value={vpa}
-            onChange={(e) => setVPA(e.target.value)}
-          />
-          <Input
-            type="number"
-            placeholder="Enter Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <Button type="submit">Transfer</Button>
-        </div>
-      </form>
-
       {/* Transactions Table */}
       <Table>
         <TableCaption>Transaction History</TableCaption>

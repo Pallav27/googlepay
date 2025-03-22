@@ -103,33 +103,32 @@ export default function Home() {
 
       <ResizablePanelGroup direction="horizontal" className="flex-1 w-full">
         <ResizablePanel className="h-full" defaultSize={25}>
-          <Balance user={user} />
+          <Balance user={user} onTransfer={handleTransfer} />
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel className="h-full" defaultSize={50}>
           <ResizablePanelGroup direction="vertical" className="h-full">
             <ResizablePanel className="h-full" defaultSize={50}>
-            <Transactions
+              <Transactions
                 debits={user?.debits || []}
                 credits={user?.credits || []}
-                onTransfer={handleTransfer} // Pass the handleTransfer function
-            />
+              />
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel className="h-full" defaultSize={50}>
-            <TransactionChart
-  transactions={(user?.debits || []).map((debit) => ({
-    date: new Date(debit.timestamp).toLocaleDateString(),
-    debits: debit.amount,
-    credits: 0,
-  })).concat(
-    (user?.credits || []).map((credit) => ({
-      date: new Date(credit.timestamp).toLocaleDateString(),
-      debits: 0,
-      credits: credit.amount,
-    }))
-  )}
-/>
+              <TransactionChart
+                transactions={(user?.debits || []).map((debit) => ({
+                  date: new Date(debit.timestamp).toLocaleDateString(),
+                  debits: debit.amount,
+                  credits: 0,
+                })).concat(
+                  (user?.credits || []).map((credit) => ({
+                    date: new Date(credit.timestamp).toLocaleDateString(),
+                    debits: 0,
+                    credits: credit.amount,
+                  }))
+                )}
+              />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
